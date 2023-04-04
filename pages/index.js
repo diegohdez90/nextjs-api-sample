@@ -1,8 +1,14 @@
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export default function Home() {
   const nameRef = useRef();
   const emailRef = useRef();
+
+  const [contacts, setContacts] = useState([]);
+
+  useEffect(() => {
+    fetchContacts();
+  }, [])
 
   const onSubmitData = (e) => {
     e.preventDefault();
@@ -18,6 +24,19 @@ export default function Home() {
       headers: {
         'Content-Type': 'application/json'}
     })
+    .then(res => res.json())
+    .then(data => {
+      fetchContacts();
+    });
+  }
+
+  const fetchContacts = () => {
+    fetch('/api/post')
+      .then(res => res.json())
+      .then(content => {
+        const { data } = content;
+        setContacts(data);
+      });
   }
 
   return (
@@ -32,6 +51,16 @@ export default function Home() {
         </label>
         <input type='submit' value='Send' />
       </form>
+      <div>
+        You have {contacts.length} Contacts saved
+        <ul>
+          {
+            contacts.map(contact => (
+              <li key={contact.id}>{contact.name}: {contact.email}</li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   )
 }
