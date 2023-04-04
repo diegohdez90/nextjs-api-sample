@@ -7,7 +7,14 @@ const Contacts = (props) => {
         <h1>Contacts</h1>
         <div>
             <ul>
-                {props.contacts.map(contact => <li key={contact.id}>{contact.name}: {contact.email}</li>)}
+                {props.contacts
+                    .map(contact => (
+                        <li
+                            key={contact.id}
+                        >{contact.name}: {contact.email}
+                            <a href={`/contacts/${contact.id}`}>See Info</a>
+                        </li>)
+                    )}
             </ul>
         </div>
     </Fragment>)
