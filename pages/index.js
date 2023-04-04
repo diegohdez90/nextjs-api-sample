@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { fetchContacts } from "../utils/api";
 
 export default function Home() {
   const nameRef = useRef();
@@ -6,9 +7,15 @@ export default function Home() {
 
   const [contacts, setContacts] = useState([]);
 
+
   useEffect(() => {
-    fetchContacts();
+    return async () => {
+      const res = await fetchContacts()
+      const {data} = res;
+      setContacts(data);
+    }
   }, [])
+  
 
   const onSubmitData = (e) => {
     e.preventDefault();
@@ -25,18 +32,11 @@ export default function Home() {
         'Content-Type': 'application/json'}
     })
     .then(res => res.json())
-    .then(data => {
-      fetchContacts();
+    .then(async () => {
+      const res = await fetchContacts();
+      const { data } = res;
+      setContacts(data);
     });
-  }
-
-  const fetchContacts = () => {
-    fetch('/api/post')
-      .then(res => res.json())
-      .then(content => {
-        const { data } = content;
-        setContacts(data);
-      });
   }
 
   return (
